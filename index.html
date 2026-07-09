@@ -137,12 +137,6 @@
     </div>
 
     <div class="field">
-      <label>🐟 魚種（釣れなかった日は空欄のまま匹数を0に）</label>
-      <input type="text" id="f-fish" placeholder="例: ミーバイ（ボウズなら空欄でOK）">
-      <div class="chips" id="chips-fish" style="margin-top:8px;"></div>
-    </div>
-
-    <div class="field">
       <label>📍 場所</label>
       <div class="chips" id="chips-place"></div>
       <div class="geo-row">
@@ -150,26 +144,6 @@
         <button type="button" class="geo-btn" onclick="openMapNow()">🗺️ 地図で確認</button>
       </div>
       <p id="geo-status" style="font-size:12px; color:var(--sub); margin-top:5px;"></p>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label>📏 サイズ（cm）</label>
-        <input type="number" id="f-size" inputmode="decimal" placeholder="例: 35">
-      </div>
-      <div class="field">
-        <label>🔢 匹数（0＝ボウズもOK）</label>
-        <div class="counter">
-          <button type="button" onclick="cnt(-1)">−</button>
-          <input type="number" id="f-count" value="1" inputmode="numeric" min="0">
-          <button type="button" onclick="cnt(1)">＋</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>⚡ アタリ</label>
-      <div class="chips" id="chips-atari"></div>
     </div>
 
     <div class="field">
@@ -211,10 +185,36 @@
     </div>
 
     <div class="field">
+      <label>⚡ アタリ</label>
+      <div class="chips" id="chips-atari"></div>
+    </div>
+
+    <div class="field">
+      <label>🐟 魚種（釣れなかった日は空欄のまま匹数を0に）</label>
+      <input type="text" id="f-fish" placeholder="例: ミーバイ（ボウズなら空欄でOK）">
+      <div class="chips" id="chips-fish" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="field">
       <label>📷 写真（任意・3枚まで）</label>
       <button type="button" class="geo-btn" style="width:100%;" onclick="document.getElementById('f-photo').click()">📷 写真を追加（撮影 or 選択）</button>
       <input type="file" id="f-photo" accept="image/*" multiple style="display:none" onchange="addPhotos(this)">
       <div class="photo-strip" id="photo-strip"></div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>📏 サイズ（cm）</label>
+        <input type="number" id="f-size" inputmode="decimal" placeholder="例: 35">
+      </div>
+      <div class="field">
+        <label>🔢 匹数（0＝ボウズもOK）</label>
+        <div class="counter">
+          <button type="button" onclick="cnt(-1)">−</button>
+          <input type="number" id="f-count" value="1" inputmode="numeric" min="0">
+          <button type="button" onclick="cnt(1)">＋</button>
+        </div>
+      </div>
     </div>
 
     <div class="field">
@@ -749,7 +749,7 @@ function initDate(){
 }
 
 /* ---------- 起動 ---------- */
-/* v2.4: 場所の追加時に住所を登録→地図ポイントとして保存 */
+/* v2.5: 入力項目の並び順を変更（日付→場所→地形→天気→潮回り→潮位→仕掛け→餌→アタリ→魚種→写真→サイズ・匹数→メモ） */
 load(); renderAllChips(); initDate();
 </script>
 </body>
