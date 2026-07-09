@@ -303,6 +303,7 @@ function load(){
   ['fish','place','rig','bait'].forEach(k=>{if(!Array.isArray(opts[k]))opts[k]=[];});
   if(!Array.isArray(opts.terrain))opts.terrain=['堤防','漁港','テトラ','磯','砂浜','河口','リーフ','船'];
   if(typeof opts.placeGeo!=='object'||!opts.placeGeo)opts.placeGeo={};
+  if(typeof opts.placeAddr!=='object'||!opts.placeAddr)opts.placeAddr={};
 }
 function persist(){
   try{
@@ -342,7 +343,14 @@ function renderChips(id,list,key,addable){
       if(v&&v.trim()){
         const t=v.trim();
         if(!list.includes(t)) list.push(t);
-        sel[key]=t; persist(); renderChips(id,list,key,addable);
+        sel[key]=t;
+        // 場所の場合は住所も聞いて、地図ポイントとして保存
+        if(key==='place'){
+          const ad=prompt('住所を入力すると、地図がその場所で開けます（例：沖縄県浦添市○○1-2-3）\n分からなければ空欄でOK');
+          if(ad&&ad.trim()){opts.placeAddr[t]=ad.trim();}
+        }
+        persist(); renderChips(id,list,key,addable);
+        if(key==='place'&&opts.placeAddr[t])geoStatus('✅ 「'+t+'」を住所付きで保存しました（🗺️ 地図で確認 で開けます）');
       }
     };
     box.appendChild(a);
@@ -390,6 +398,7 @@ function getGeo(){
 function gmapUrl(place,geo){
   if(geo&&geo.lat!=null)return 'https://www.google.com/maps/search/?api=1&query='+geo.lat+','+geo.lng;
   if(place&&opts.placeGeo[place])return 'https://www.google.com/maps/search/?api=1&query='+opts.placeGeo[place].lat+','+opts.placeGeo[place].lng;
+  if(place&&opts.placeAddr[place])return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(opts.placeAddr[place]);
   if(place)return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(place);
   return '';
 }
@@ -687,7 +696,11 @@ function importJSON(inp){
       if(!confirm(o.data.length+'件のデータを読み込みます。現在のデータと統合しますか？'))return;
       const ids=new Set(data.map(r=>r.id));
       o.data.forEach(r=>{if(!ids.has(r.id))data.push(r);});
-      if(o.opts){['fish','place','rig','bait','terrain'].forEach(k=>{(o.opts[k]||[]).forEach(v=>{if(!opts[k].includes(v))opts[k].push(v);});});}
+      if(o.opts){
+        ['fish','place','rig','bait','terrain'].forEach(k=>{(o.opts[k]||[]).forEach(v=>{if(!opts[k].includes(v))opts[k].push(v);});});
+        Object.assign(opts.placeGeo, o.opts.placeGeo||{});
+        Object.assign(opts.placeAddr, o.opts.placeAddr||{});
+      }
       persist(); renderAllChips(); toastMsg('📥 読み込みました');
     }catch(err){alert('ファイルを読み込めませんでした');}
   };
@@ -736,7 +749,7 @@ function initDate(){
 }
 
 /* ---------- 起動 ---------- */
-/* v2.3: ボウズ(0匹)記録・アタリ有無・地形を追加 */
+/* v2.4: 場所の追加時に住所を登録→地図ポイントとして保存 */
 load(); renderAllChips(); initDate();
 </script>
 </body>
